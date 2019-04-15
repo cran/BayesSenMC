@@ -1,4 +1,4 @@
-b1665c3261caf4c3893c20bd514abe31 *DESCRIPTION
+322eeff436b58fa921c230f290b5ea47 *DESCRIPTION
 06216384c372acc7395ef9ed56acf368 *NAMESPACE
 d0a3fd0478a77a1fb4320047b41815ce *R/bd_meta-data.R
 481c438c576397079e4160f5576eeb4a *R/models.R
@@ -11,7 +11,7 @@ ddb70328d804c085485facb6e9cb198a *data/bd_meta.RData
 cadbf94303c96e13823250fae97ec3f5 *data/smoke_meta.RData
 26fd3a69b25dc413040d38932e8f5d63 *inst/doc/BayesSenMC_demo.R
 4ef11165d2e7c43bba1220f9eecb3b1d *inst/doc/BayesSenMC_demo.Rnw
-6df946b6827f18eb21013435e4159238 *inst/doc/BayesSenMC_demo.pdf
+b068f5b88cc8e303e0dc61eeab533af8 *inst/doc/BayesSenMC_demo.pdf
 109915de26079b62ddb46086f9506527 *man/bd_meta.Rd
 7925a211f325ab4101ef04a7b70a6638 *man/correctedOR.Rd
 0f981cf6368cf5b77d803e093b93d369 *man/crudeOR.Rd
