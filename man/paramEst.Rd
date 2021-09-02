@@ -7,17 +7,17 @@
 paramEst(model, lower = 0.5, upper = 1)
 }
 \arguments{
-\item{model}{a GLMM model built with the \code{nlme_nondiff()} function.}
+\item{model}{a GLMM model built with the \code{nlmeNDiff()} function.}
 
-\item{lower}{an optional argument matching the lower bound assumption of Se and Sp of the input \code{model}. Default to 0.5 as in \code{nlme_nondiff()}.}
+\item{lower}{an optional argument matching the lower bound assumption of Se and Sp of the input \code{model}. Default to 0.5 as in \code{nlmeNDiff()}.}
 
-\item{upper}{an optional argument matching the upper bound assumption of Se and Sp. Default to 1 as in \code{nlme_nondiff()}.}
+\item{upper}{an optional argument matching the upper bound assumption of Se and Sp. Default to 1 as in \code{nlmeNDiff}.}
 }
 \value{
 It returns a list of parameter estimates which can be input into the Bayesian model functions in
-\code{BayesSenMC}. \code{(mean_logSe, var_logSe)} and \code{(mean_logSp, var_logSp)} are the logit prior distributions for Se and Sp.
-\code{Se} and \code{Sp} are the corresponding mean values given the logit prior means. \code{rho} is the correlation estimate between Se and
-Sp. \code{fisher_mean} is the Fisher's mean of the correlation assume a Fisher's distribution.
+\code{BayesSenMC}. \code{(m.lg.se, s.lg.se)} and \code{(m.lg.sp, s.lg.sp)} are the logit prior distributions for Se and Sp.
+\code{se} and \code{sp} are the corresponding mean values given the logit prior means. \code{rho} is the correlation estimate between Se and
+Sp. \code{m.fisher} is the Fisher's mean of the correlation assume a Fisher's distribution.
 }
 \description{
 Get parameter estimates of the GLMM model to plug into modeling functions in \code{BayesSenMC} for Bayesian inference of adjusted odds ratio.
@@ -25,6 +25,6 @@ Get parameter estimates of the GLMM model to plug into modeling functions in \co
 \examples{
 data(bd_meta)
 
-mod <- nlmeNDiff(bd_meta, lower = 0) # see nlme_nondiff() for detailed example.
-pList <- paramEst(mod)
+mod <- nlmeNDiff(bd_meta, lower = 0) # see \code{nlmeNDiff()} for detailed example.
+prior_list <- paramEst(mod)
 }

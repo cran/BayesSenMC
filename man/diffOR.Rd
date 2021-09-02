@@ -4,20 +4,39 @@
 \alias{diffOR}
 \title{Model with differential misclassification}
 \usage{
-diffOR(a, N1, c, N0, mu, s.lg.se0, s.lg.se1, s.lg.sp0, s.lg.sp1,
-  corr.sesp0, corr.sesp1, corr.group = 0, z = NULL,
-  name = "Model with differential classification", chains = 2,
-  traceplot = FALSE, inc_warmup = FALSE, window = NULL,
-  refresh = 0, seed = 0, ...)
+diffOR(
+  a,
+  N1,
+  c,
+  N0,
+  mu,
+  s.lg.se0,
+  s.lg.se1,
+  s.lg.sp0,
+  s.lg.sp1,
+  corr.sesp0,
+  corr.sesp1,
+  corr.group = 0,
+  z = NULL,
+  logitpi0_prior = c(0, 10),
+  lor_prior = c(0, 2),
+  chains = 2,
+  traceplot = FALSE,
+  inc_warmup = FALSE,
+  window = NULL,
+  refresh = 0,
+  seed = 0,
+  ...
+)
 }
 \arguments{
-\item{a}{# of exposed subjects in the case group.}
+\item{a}{number of exposed subjects in the case group.}
 
-\item{N1}{# of total subjects in the case group.}
+\item{N1}{number of total subjects in the case group.}
 
-\item{c}{# of exposed subjects in the control group.}
+\item{c}{number of exposed subjects in the control group.}
 
-\item{N0}{# of total subjects in the control group.}
+\item{N0}{number of total subjects in the control group.}
 
 \item{mu}{vector of length 4; multivariate normal distribution of \eqn{z \sim (mu, varz)}, where each \eqn{\mu} corresponds to the logit mean of \eqn{Se_0}, \eqn{Se_1}, \eqn{Sp_0} and \eqn{Sp_1} (0 for controls, 1 for cases group).}
 
@@ -37,44 +56,40 @@ diffOR(a, N1, c, N0, mu, s.lg.se0, s.lg.se1, s.lg.sp0, s.lg.sp1,
 
 \item{z}{vector of length 4; used as an initial value for \eqn{z \sim (mu, varz)}. Default to mu.}
 
-\item{name}{a string of the name of the model. Default to "Model with differential misclassification".}
+\item{logitpi0_prior}{mean and sd of the prior normal distribution of \code{logit(pi0)}. Default to \code{c(0,10)}.}
+
+\item{lor_prior}{mean and sd of the prior normal distribution of corrected log odds ratio. Default to \code{c(0,2)}.}
 
 \item{chains}{number of Markov Chains. Default to 2.}
 
-\item{traceplot}{Logical, defaulting to \code{FALSE}. If \code{TRUE} it will draw the 
-\href{https://mc-stan.org/rstan/reference/stanfit-method-traceplot.html}{traceplot} corresponding to one or more Markov chains.}
+\item{traceplot}{Logical, defaulting to \code{FALSE}. If \code{TRUE} it will draw the \link[rstan]{traceplot} corresponding to one or more Markov chains.}
 
 \item{inc_warmup}{Only evaluated when \code{traceplot = TRUE}. \code{TRUE} or \code{FALSE}, indicating whether or not to include the warmup sample in the
 traceplot; defaults to \code{FALSE}.}
 
-\item{window}{Only evaluated when \code{traceplot = TRUE}. A vector of length 2. Iterations between \code{window[1]} and \code{window[2]} will be shown in the plot. 
-The default shows all iterations if \code{inc_warmup} is \code{TRUE} and all iterations from the sampling period only if \code{inc_warmup} is \code{FALSE}. 
+\item{window}{Only evaluated when \code{traceplot = TRUE}. A vector of length 2. Iterations between \code{window[1]} and \code{window[2]} will be shown in the plot.
+The default shows all iterations if \code{inc_warmup} is \code{TRUE} and all iterations from the sampling period only if \code{inc_warmup} is \code{FALSE}.
 If \code{inc_warmup} is \code{FALSE} the iterations specified in \code{window} do not include iterations from the warmup period.
 The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.}
 
 \item{refresh}{an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 If on, refresh = max(iter/10, 1) is generally recommended.}
 
-\item{seed}{the seed for random number generation. See \href{https://www.rdocumentation.org/packages/rstan/versions/2.17.3/topics/stan}{stan} for more details.}
+\item{seed}{the seed for random number generation. See \link[rstan]{stan} for more details.}
 
-\item{...}{optional parameters passed to \href{https://www.rdocumentation.org/packages/rstan/versions/2.17.3/topics/stan}{stan}.}
+\item{...}{optional parameters passed to \link[rstan]{stan}.}
 }
 \value{
-It returns a stanfit object of this model, which inherits stanfit class methods. See
-\href{https://mc-stan.org/rstan/reference/stanfit-class.html}{here} for more details.
+It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 }
 \description{
 Generate a stanfit object corresponding to a posterior distribution of corrected odds ratio given a four-variate differential misclassification.
 }
 \examples{
 # Case-control study data of Bipolar Disorder with rheumatoid arthritis (Farhi et al. 2016)
-# Data from \\url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}
-\donttest{
-diffOR(a = 66, N1 = 11782, c = 243, N0 = 57973, chains = 3, mu = c(1.069, 1.069, 1.126, 1.126),
-  s.lg.se0 = 0.893, s.lg.se1 = 0.893, s.lg.sp0 = 0.712, s.lg.sp1 = 0.712, corr.sesp0 = -0.377, 
-  corr.sesp1 = -0.377, corr.group = 0, iter = 10000, seed = 0)
-diffOR(a = 66, N1 = 11782, c = 243, N0 = 57973, , mu = c(1.069, 1.069, 1.126, 1.126),
-  s.lg.se0 = 0.893, s.lg.se1 = 0.893, s.lg.sp0 = 0.712, s.lg.sp1 = 0.712, corr.sesp0 = -0.377, 
-  corr.sesp1 = -0.377, corr.group = 0, traceplot = TRUE)
-  }
+# Data from \url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}
+
+diffOR(a = 66, N1 = 11782, c = 243, N0 = 57973, mu = c(1.069, 1.069, 1.126, 1.126),
+  s.lg.se0 = 0.712, s.lg.se1 = 0.712, s.lg.sp0 = 0.893, s.lg.sp1 = 0.893, corr.sesp0 = -0.377,
+  corr.sesp1 = -0.377, corr.group = 0, chains = 3, iter = 10000)
 }

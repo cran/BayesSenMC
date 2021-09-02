@@ -19,14 +19,14 @@ which is the number of meta-analysis study results used in the model.}
 \item{id}{a TRUE of FALSE argument indicating if the supplied data has a \code{sid} column that gives same studies
 the same subject ID. Default to FALSE, which assumes that all studies have different IDs.}
 
-\item{...}{optional parameters passed to \href{https://www.rdocumentation.org/packages/lme4/versions/1.1-18-1/topics/glmer}{glmer}.}
+\item{...}{optional parameters passed to \link[lme4]{glmer}.}
 }
 \value{
-It returns an object of class \href{https://www.rdocumentation.org/packages/lme4/versions/1.1-18-1/topics/merMod-class}{mermod}. 
+It returns an object of class \link[lme4]{merMod}.
 Besides generic class methods, \code{paramEst()} is implemented in \code{BayesSenMC} to get the parameter estimates used in the Bayesian misclassification model functions.
 }
 \description{
-Fit a bivariate generalized linear mixed-effects model (GLMM) for non-differential sensitivity and specificity using the \code{glmer} function in \code{lme4}. 
+Fit a bivariate generalized linear mixed-effects model (GLMM) for non-differential sensitivity and specificity using the \code{glmer} function in \code{lme4}.
 Lower and upper bounds for Se and Sp can be specified according to the assumptions of the study.
 }
 \examples{

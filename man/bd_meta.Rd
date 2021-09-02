@@ -4,7 +4,9 @@
 \name{bd_meta}
 \alias{bd_meta}
 \title{Meta-analysis data on Bipolar Disorder diagnosis accuracy}
-\format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 55 rows and 8 columns.}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 55 rows and 8 columns.
+}
 \source{
 \url{https://www.sciencedirect.com/science/article/pii/S0165032714006466}
 }
@@ -20,10 +22,9 @@ type II or not specified.
 }
 \examples{
 data(bd_meta)
-\donttest{iplotCurves(phe, times)}
 }
 \references{
 Carvalho et al. (2015) "Screening for bipolar spectrum disorders: A comprehensive meta-analysis of accuracy studies". Journal of Affective Disorders 172: 337 - 346.
-(\href{http://www.sciencedirect.com/science/article/pii/S0165032714006466}{ScienceDirect})
+(\href{https://www.sciencedirect.com/science/article/pii/S0165032714006466}{ScienceDirect})
 }
 \keyword{dataset}

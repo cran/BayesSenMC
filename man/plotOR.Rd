@@ -4,19 +4,32 @@
 \alias{plotOR}
 \title{Plot Model}
 \usage{
-plotOR(model, a, N1, c, N0, se = 1, sp = 1, x.min = 0,
-  x.max = NULL, y.max = NULL, binwidth = 0.25, fill = "gray", ...)
+plotOR(
+  model,
+  a,
+  N1,
+  c,
+  N0,
+  se = 1,
+  sp = 1,
+  x.min = 0,
+  x.max = NULL,
+  y.max = NULL,
+  binwidth = 0.25,
+  fill = "gray",
+  ...
+)
 }
 \arguments{
 \item{model}{A stanfit object.}
 
-\item{a}{# of exposed subjects in the case group. Along with N1, c, N0, se and sp, they are used to plot probability density with no misclassification and constant misclassification as a comparison.}
+\item{a}{number of exposed subjects in the case group. Along with N1, c, N0, se and sp, they are used to plot probability density with no misclassification and constant misclassification as a comparison.}
 
-\item{N1}{# of total subjects in the case group.}
+\item{N1}{number of total subjects in the case group.}
 
-\item{c}{# of exposed subjects in the control group.}
+\item{c}{number of exposed subjects in the control group.}
 
-\item{N0}{# of total subjects in the control group.}
+\item{N0}{number of total subjects in the control group.}
 
 \item{se}{sensitivity. Default to 1. If no other values are specified for either se or sp, then only the density curve of corrected model will be drawn.}
 
@@ -35,23 +48,24 @@ plotOR(model, a, N1, c, N0, se = 1, sp = 1, x.min = 0,
 \item{...}{optional additional arguments passed to \code{geom_histogram}}
 }
 \value{
-It returns a \href{https://www.rdocumentation.org/packages/ggplot2/versions/0.9.0/topics/ggplot}{ggplot} that can be further 
+It returns a \link[ggplot2]{ggplot} that can be further
 customized using the ggplot2 package.
 }
 \description{
-Plot the posterior distribution of adjusted odds ratio given the stanfit object. It also plots the density lines of corrected odds ratio given no or constant misclassification, assuming log-normality is true.
+Plot the posterior distribution of adjusted odds ratio given the stanfit object. It also plots the density lines of crude/uncorrected odds ratio and corrected odds ratio with constant misclassification, assuming log-normality is true. If both Se and Sp are set to 1 (i.e., no misclassification), then only the density line of crude OR will be plotted.
 }
 \examples{
 # Case-control study data of Bipolar Disorder with rheumatoid arthritis (Farhi et al. 2016)
-# Data from \\url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}
+# Data from \url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}
 
 library(ggplot2)
-\donttest{
-my.mod <- randCorrOR(a = 66, N1 = 11782, c = 243, N0 = 57973, m.lg.se = 1.069, 
-m.lg.sp = 1.126, s.lg.se = 0.893, s.lg.sp = 0.712, m.z = -0.399, s.z = 0.139, 
+my.mod <- randCorrOR(a = 66, N1 = 11782, c = 243, N0 = 57973, m.lg.se = 1.069,
+m.lg.sp = 1.126, s.lg.se = 0.893, s.lg.sp = 0.712, m.z = -0.399, s.z = 0.139,
 seed = 0)
 
-my.plot <- plotOR(my.mod, a = 66, N1 = 11782, c = 243, N0 = 57973, se = 0.744, 
+my.plot <- plotOR(my.mod, a = 66, N1 = 11782, c = 243, N0 = 57973, se = 0.744,
 sp = 0.755, x.max = 3, y.max = 5, binwidth = 0.1) + ggtitle("Model with random correlation")
-}
+
+# the user can also directly extract the data from a stanfit object using the following
+my.data <- as.data.frame(my.mod)
 }

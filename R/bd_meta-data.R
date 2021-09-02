@@ -13,10 +13,9 @@
 #' @keywords dataset
 #'
 #' @references Carvalho et al. (2015) "Screening for bipolar spectrum disorders: A comprehensive meta-analysis of accuracy studies". Journal of Affective Disorders 172: 337 - 346.
-#' (\href{http://www.sciencedirect.com/science/article/pii/S0165032714006466}{ScienceDirect})
+#' (\href{https://www.sciencedirect.com/science/article/pii/S0165032714006466}{ScienceDirect})
 #'
 #' @source \url{https://www.sciencedirect.com/science/article/pii/S0165032714006466}
 #' @examples
 #' data(bd_meta)
-#' \donttest{iplotCurves(phe, times)}
 "bd_meta"

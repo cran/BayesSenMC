@@ -10,8 +10,8 @@
 #' @param upper an optional argument specifying the upper bound assumption of Se and Sp. Default to 1.
 #' @param id a TRUE of FALSE argument indicating if the supplied data has a \code{sid} column that gives same studies
 #' the same subject ID. Default to FALSE, which assumes that all studies have different IDs.
-#' @param ... optional parameters passed to \href{https://www.rdocumentation.org/packages/lme4/versions/1.1-18-1/topics/glmer}{glmer}.
-#' @return It returns an object of class \href{https://www.rdocumentation.org/packages/lme4/versions/1.1-18-1/topics/merMod-class}{mermod}. 
+#' @param ... optional parameters passed to \link[lme4]{glmer}.
+#' @return It returns an object of class \link[lme4]{merMod}.
 #' Besides generic class methods, \code{paramEst()} is implemented in \code{BayesSenMC} to get the parameter estimates used in the Bayesian misclassification model functions. 
 #' @import lme4
 #' @importFrom dplyr mutate rename select %>%
@@ -24,7 +24,7 @@
 
 nlmeNDiff <- function(data, lower = 0.5, upper = 1, id = FALSE, ...) {
   
-  # to get rid of cran global not definied warning
+  # to get rid of cran global not defined warning
   N1 <- n11 <- n10 <- N0 <- n01 <- n00 <- a <- b <- Y <- N <- Se <- sid <- NULL
   
   if (id == FALSE) {
@@ -43,7 +43,6 @@ nlmeNDiff <- function(data, lower = 0.5, upper = 1, id = FALSE, ...) {
   )
   
   # make sure it will not crash with significantly high lower bound value
-  lower_data <- min(dat_final$Y / dat_final$N)
   if (lower > min(dat_final$Y / dat_final$N)) {
     lower <- min(lower, min(dat_final$Y / dat_final$N))
     message("The lower bound used in this model is changed to ", lower, 
@@ -70,37 +69,39 @@ nlmeNDiff <- function(data, lower = 0.5, upper = 1, id = FALSE, ...) {
   attributes(mod)$type <- "nondiff"
   attributes(mod)$lower <- lower
   attributes(mod)$upper <- upper
-  
-  print(mod)
+  attributes(mod)$size <- nrow(data)
+
   return(mod)
 }
 
 #' Parameter estimates of the GLMM model
 #'
 #' Get parameter estimates of the GLMM model to plug into modeling functions in \code{BayesSenMC} for Bayesian inference of adjusted odds ratio.
-#' @param model a GLMM model built with the \code{nlme_nondiff()} function.
-#' @param lower an optional argument matching the lower bound assumption of Se and Sp of the input \code{model}. Default to 0.5 as in \code{nlme_nondiff()}.
-#' @param upper an optional argument matching the upper bound assumption of Se and Sp. Default to 1 as in \code{nlme_nondiff()}.
+#' @param model a GLMM model built with the \code{nlmeNDiff()} function.
+#' @param lower an optional argument matching the lower bound assumption of Se and Sp of the input \code{model}. Default to 0.5 as in \code{nlmeNDiff()}.
+#' @param upper an optional argument matching the upper bound assumption of Se and Sp. Default to 1 as in \code{nlmeNDiff}.
 #' @return It returns a list of parameter estimates which can be input into the Bayesian model functions in
-#' \code{BayesSenMC}. \code{(mean_logSe, var_logSe)} and \code{(mean_logSp, var_logSp)} are the logit prior distributions for Se and Sp.
-#' \code{Se} and \code{Sp} are the corresponding mean values given the logit prior means. \code{rho} is the correlation estimate between Se and
-#' Sp. \code{fisher_mean} is the Fisher's mean of the correlation assume a Fisher's distribution.
+#' \code{BayesSenMC}. \code{(m.lg.se, s.lg.se)} and \code{(m.lg.sp, s.lg.sp)} are the logit prior distributions for Se and Sp.
+#' \code{se} and \code{sp} are the corresponding mean values given the logit prior means. \code{rho} is the correlation estimate between Se and
+#' Sp. \code{m.fisher} is the Fisher's mean of the correlation assume a Fisher's distribution.
 #' @import lme4
 #' @export
 #' @examples
 #' data(bd_meta)
 #' 
-#' mod <- nlmeNDiff(bd_meta, lower = 0) # see nlme_nondiff() for detailed example.
-#' pList <- paramEst(mod)
+#' mod <- nlmeNDiff(bd_meta, lower = 0) # see \code{nlmeNDiff()} for detailed example.
+#' prior_list <- paramEst(mod)
 
 paramEst <- function(model, lower = 0.5, upper = 1) {
+  
   if (is.null(attributes(model)$type) || is.null(attributes(model)$lower) 
       || is.null(attributes(model)$upper)) {
-    stop("Model must be generated from the nlme_nondiff() or the nlme_diff() function.")
+    stop("Model must be generated from the nlmeNdiff() function.")
   }
   
   lower <- attr(model, "lower")
   upper <- attr(model, "upper")
+  size <- attr(model, "size")
   
   if (attr(model, "type") == "nondiff") {
     s <- summary(model)
@@ -111,35 +112,18 @@ paramEst <- function(model, lower = 0.5, upper = 1) {
     SeSp <- s$varcor$sid[2]
     
     return(list(
-      mean_logSe = alpha,
-      mean_logSp = beta,
-      var_logSe = s2Se,
-      var_logSp = s2Sp,
-      Se = (exp(alpha) / (1 + exp(alpha))) * (upper - lower) + lower,
-      Sp = (exp(beta) / (1 + exp(beta))) * (upper - lower) + lower,
+      m.lg.se = alpha,
+      m.lg.sp = beta,
+      s.lg.se = sqrt(s2Se),
+      s.lg.sp = sqrt(s2Sp),
+      se = (exp(alpha) / (1 + exp(alpha))) * (upper - lower) + lower,
+      sp = (exp(beta) / (1 + exp(beta))) * (upper - lower) + lower,
       rho = SeSp/sqrt(s2Se*s2Sp),
-      fisher_mean = 0.5*(log(1+SeSp/sqrt(s2Se*s2Sp))-log(1-SeSp/sqrt(s2Se*s2Sp)))
+      m.z = 0.5*(log(1+SeSp/sqrt(s2Se*s2Sp))-log(1-SeSp/sqrt(s2Se*s2Sp))),
+      s.z = 1 / sqrt(size-3)
     ))
   }
   
-  else if (attr(model, "type") == "diff") {
-    s <- summary(model)
-    intercept <- s$coefficients[1,1]
-    se <- s$coefficients['Se', 1]
-    group <- s$coefficients['group', 1]
-    
-    
-    return(list(
-      m.lg.se0 = intercept + se,
-      m.lg.se1 = intercept + se + group,
-      m.lg.sp0 = intercept,
-      m.lg.sp1 = intercept + group,
-      s.lg.se = sqrt(s$varcor$sid.1[1]),
-      s.lg.sp = sqrt(s$varcor$sid.1[4]),
-      corr.group = s$varcor$sid[3] / sqrt(s$varcor$sid[1] * s$varcor$sid[4]),
-      corr.sesp = s$varcor$sid.1[3] / sqrt(s$varcor$sid.1[1] * s$varcor$sid.1[4])
-    ))
+  else {stop("Model is not generated from nlmeNDiff().")}
+
   }
-  
-  else {stop("Model is not generated from nlme_nondiff() or nlme_diff().")}
-}

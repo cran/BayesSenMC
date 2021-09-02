@@ -2,58 +2,78 @@
 % Please edit documentation in R/models.R
 \name{correctedOR}
 \alias{correctedOR}
-\title{Model without misclassification}
+\title{Model with constant nondifferential misclassification}
 \usage{
-correctedOR(a, N1, c, N0, name = "Corrected Model", chains = 2,
-  traceplot = FALSE, inc_warmup = FALSE, window = NULL,
-  refresh = 0, seed = NA, ...)
+correctedOR(
+  a,
+  N1,
+  c,
+  N0,
+  prior_list = NULL,
+  se = NULL,
+  sp = NULL,
+  logitpi0_prior = c(0, 10),
+  lor_prior = c(0, 2),
+  chains = 2,
+  traceplot = FALSE,
+  inc_warmup = FALSE,
+  window = NULL,
+  refresh = 0,
+  seed = NA,
+  ...
+)
 }
 \arguments{
-\item{a}{# of exposed subjects in the case group.}
+\item{a}{number of exposed subjects in the case group.}
 
-\item{N1}{# of total subjects in the case group.}
+\item{N1}{number of total subjects in the case group.}
 
-\item{c}{# of exposed subjects in the control group.}
+\item{c}{number of exposed subjects in the control group.}
 
-\item{N0}{# of total subjects in the control group.}
+\item{N0}{number of total subjects in the control group.}
 
-\item{name}{a string of the name of the model. Default to "Corrected Model".}
+\item{prior_list}{list of priors. Can be replaced by the function call to \code{paramEst}, or a list of prior parameters (\code{se}, \code{sp}).
+If \code{prior_list} is specified, the values for the function parameters \code{se} and \code{sp} will be disregarded.}
+
+\item{se}{sensitivity. Do not have to specify this if \code{prior_list} is given - this will be disregarded.}
+
+\item{sp}{specificity. Do not have to specify this if \code{prior_list} is given - this will be disregarded.}
+
+\item{logitpi0_prior}{mean and sd of the prior normal distribution of \code{logit(pi0)}. Default to \code{c(0,10)}.}
+
+\item{lor_prior}{mean and sd of the prior normal distribution of corrected log odds ratio. Default to \code{c(0,2)}.}
 
 \item{chains}{number of Markov Chains. Default to 2.}
 
-\item{traceplot}{Logical, defaulting to \code{FALSE}. If \code{TRUE} it will draw the 
-\href{https://mc-stan.org/rstan/reference/stanfit-method-traceplot.html}{traceplot} corresponding to one or more Markov chains.}
+\item{traceplot}{Logical, defaulting to \code{FALSE}. If \code{TRUE} it will draw the \link[rstan]{traceplot} corresponding to one or more Markov chains.}
 
 \item{inc_warmup}{Only evaluated when \code{traceplot = TRUE}. \code{TRUE} or \code{FALSE}, indicating whether or not to include the warmup sample in the
 traceplot; defaults to \code{FALSE}.}
 
-\item{window}{Only evaluated when \code{traceplot = TRUE}. A vector of length 2. Iterations between \code{window[1]} and \code{window[2]} will be shown in the plot. 
-The default shows all iterations if \code{inc_warmup} is \code{TRUE} and all iterations from the sampling period only if \code{inc_warmup} is \code{FALSE}. 
+\item{window}{Only evaluated when \code{traceplot = TRUE}. A vector of length 2. Iterations between \code{window[1]} and \code{window[2]} will be shown in the plot.
+The default shows all iterations if \code{inc_warmup} is \code{TRUE} and all iterations from the sampling period only if \code{inc_warmup} is \code{FALSE}.
 If \code{inc_warmup} is \code{FALSE} the iterations specified in \code{window} do not include iterations from the warmup period.
 The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.}
 
 \item{refresh}{an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 If on, refresh = max(iter/10, 1) is generally recommended.}
 
-\item{seed}{the seed for random number generation. See \href{https://www.rdocumentation.org/packages/rstan/versions/2.17.3/topics/stan}{stan} for more details.}
+\item{seed}{the seed for random number generation. See \link[rstan]{stan} for more details.}
 
-\item{...}{optional parameters passed to \href{https://www.rdocumentation.org/packages/rstan/versions/2.17.3/topics/stan}{stan}.}
+\item{...}{optional parameters passed to \link[rstan]{stan}.}
 }
 \value{
-It returns a stanfit object of this model, which inherits stanfit class methods. See
-\href{https://mc-stan.org/rstan/reference/stanfit-class.html}{here} for more details.
+It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 }
 \description{
-Generate a stanfit object corresponding to a posterior distribution of uncorrected odds ratio given no misclassification.
+Generate a stanfit object corresponding to a posterior distribution of corrected odds ratio given nondifferential misclassification with Se and Sp (i.e., both are constant and at least one of Se or Sp is lower than 1).
 }
 \examples{
 # Case-control study data of Bipolar Disorder with rheumatoid arthritis (Farhi et al. 2016)
-# Data from \\url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}
+# Data from \url{https://www.sciencedirect.com/science/article/pii/S0165032715303864#bib13}\
 
-# 3 MCMC chains with 10000 iterations each
-\donttest{
-correctedOR(a = 66, N1 = 11782, c = 243, N0 = 57973, chains = 3, 
-iter = 10000, seed = 0)
-correctedOR(a = 66, N1 = 11782, c = 243, N0 = 57973, traceplot = TRUE)
-}
+mod <- nlmeNDiff(bd_meta, lower = 0) # see \code{nlmeNDiff()} for detailed example.
+prior_list <- paramEst(mod)
+correctedOR(a = 66, N1 = 11782, c = 243, N0 = 57973, prior_list = prior_list,
+chains = 3, iter = 10000)
 }
