@@ -11,13 +11,14 @@ data {
   real<lower=0> sLOR_c;
 }
 parameters {
-  real logit_pi0;
-  real LOR_c;
+  // Parameter values that are too large will cause exponential to go to inf, causing nan
+  real<lower=-200, upper=200> logit_pi0;
+  real<lower=-200, upper=200> LOR_c;
 }
 transformed parameters {
   real<lower=0, upper=1> pi1;
   real<lower=0, upper=1> pi0;
-  real ORadj;
+  real<lower=0> ORadj;
   real<lower=0, upper=1> p1;
   real<lower=0, upper=1> p0;
   pi0 = exp(logit_pi0) / (exp(logit_pi0) + 1);
@@ -27,8 +28,8 @@ transformed parameters {
   ORadj = exp(LOR_c);
 }
 model {
-  a ~ binomial(N1, p1);
-  c ~ binomial(N0, p0);
   logit_pi0 ~ normal(mLogit_pi0, sLogit_pi0);
   LOR_c ~ normal(mLOR_c, sLOR_c);
+  a ~ binomial(N1, p1);
+  c ~ binomial(N0, p0);
 }

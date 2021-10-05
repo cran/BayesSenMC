@@ -1,7 +1,7 @@
 Package: BayesSenMC
 Title: Different Models of Posterior Distributions of Adjusted Odds
         Ratio
-Version: 0.1.3
+Version: 0.1.4
 Author: Jinhui Yang, Haitao Chu, and Lifeng Lin
 Maintainer: Jinhui Yang <james.yangjinhui@gmail.com>
 URL: https://github.com/formidify/BayesSenMC
@@ -20,6 +20,6 @@ LinkingTo: BH (>= 1.66.0), Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0),
         2.18.0)
 SystemRequirements: GNU make
 NeedsCompilation: yes
-Packaged: 2021-08-23 20:10:45 UTC; james
+Packaged: 2021-09-28 14:35:06 UTC; james
 Repository: CRAN
-Date/Publication: 2021-09-02 12:40:02 UTC
+Date/Publication: 2021-10-05 23:10:12 UTC

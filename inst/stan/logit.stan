@@ -8,24 +8,25 @@ data {
   real sdX;
   real sdY;
   real mLogit_pi0;
-  real sLogit_pi0;
+  real<lower=0> sLogit_pi0;
   real mLOR_c;
-  real sLOR_c;
+  real<lower=0> sLOR_c;
 }
 parameters {
-  real logit_pi0;
-  real LOR_c;
-  real X;
-  real Y;
+  // Parameter values that are too large will cause exponential to go to inf, causing nan
+  real<lower=-200, upper=200> logit_pi0;
+  real<lower=-200, upper=200> LOR_c;
+  real<lower=-200, upper=200> X;
+  real<lower=-200, upper=200> Y;
 }
 transformed parameters {
   real<lower=0, upper=1> pi1;
   real<lower=0, upper=1> pi0;
-  real ORadj;
-  real p1;
-  real p0;
-  real Se;
-  real Sp;
+  real<lower=0> ORadj;
+  real<lower=0, upper=1> p1;
+  real<lower=0, upper=1> p0;
+  real<lower=0, upper=1> Se;
+  real<lower=0, upper=1> Sp;
   Se=(1 + exp(X)/(1 + exp(X))) / 2;
   Sp=(1 + exp(Y)/(1 + exp(Y))) / 2;
   pi0 = exp(logit_pi0) / (exp(logit_pi0) + 1);
@@ -35,10 +36,10 @@ transformed parameters {
   ORadj = exp(LOR_c);
 }
 model {
+  logit_pi0 ~ normal(mLogit_pi0, sLogit_pi0);
+  LOR_c ~ normal(mLOR_c, sLOR_c);
   X ~ normal(mX, sdX);
   Y ~ normal(mY, sdY);
   a ~ binomial(N1, p1);
   c ~ binomial(N0, p0);
-  logit_pi0 ~ normal(mLogit_pi0, sLogit_pi0);
-  LOR_c ~ normal(mLOR_c, sLOR_c);
 }

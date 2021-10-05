@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_fixedCorr");
-    reader.add_event(51, 49, "end", "model_fixedCorr");
+    reader.add_event(52, 50, "end", "model_fixedCorr");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -123,6 +123,7 @@ public:
             vals_r__ = context__.vals_r("precX0");
             pos__ = 0;
             precX0 = vals_r__[pos__++];
+            check_greater_or_equal(function__, "precX0", precX0, 0);
             current_statement_begin__ = 8;
             context__.validate_dims("data initialization", "mX1", "double", context__.to_vec());
             mX1 = double(0);
@@ -135,12 +136,15 @@ public:
             vals_r__ = context__.vals_r("precX1");
             pos__ = 0;
             precX1 = vals_r__[pos__++];
+            check_greater_or_equal(function__, "precX1", precX1, 0);
             current_statement_begin__ = 10;
             context__.validate_dims("data initialization", "rhoSe", "double", context__.to_vec());
             rhoSe = double(0);
             vals_r__ = context__.vals_r("rhoSe");
             pos__ = 0;
             rhoSe = vals_r__[pos__++];
+            check_greater_or_equal(function__, "rhoSe", rhoSe, -(1));
+            check_less_or_equal(function__, "rhoSe", rhoSe, 1);
             current_statement_begin__ = 11;
             context__.validate_dims("data initialization", "mLogit_pi0", "double", context__.to_vec());
             mLogit_pi0 = double(0);
@@ -173,13 +177,13 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 17;
-            num_params_r__ += 1;
             current_statement_begin__ = 18;
             num_params_r__ += 1;
             current_statement_begin__ = 19;
             num_params_r__ += 1;
             current_statement_begin__ = 20;
+            num_params_r__ += 1;
+            current_statement_begin__ = 21;
             num_params_r__ += 1;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -198,7 +202,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 17;
+        current_statement_begin__ = 18;
         if (!(context__.contains_r("logit_pi0")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable logit_pi0 missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("logit_pi0");
@@ -207,11 +211,11 @@ public:
         double logit_pi0(0);
         logit_pi0 = vals_r__[pos__++];
         try {
-            writer__.scalar_unconstrain(logit_pi0);
+            writer__.scalar_lub_unconstrain(-(200), 200, logit_pi0);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable logit_pi0: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 18;
+        current_statement_begin__ = 19;
         if (!(context__.contains_r("LOR_c")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable LOR_c missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("LOR_c");
@@ -220,11 +224,11 @@ public:
         double LOR_c(0);
         LOR_c = vals_r__[pos__++];
         try {
-            writer__.scalar_unconstrain(LOR_c);
+            writer__.scalar_lub_unconstrain(-(200), 200, LOR_c);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable LOR_c: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 19;
+        current_statement_begin__ = 20;
         if (!(context__.contains_r("X0")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable X0 missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("X0");
@@ -233,11 +237,11 @@ public:
         double X0(0);
         X0 = vals_r__[pos__++];
         try {
-            writer__.scalar_unconstrain(X0);
+            writer__.scalar_lub_unconstrain(-(200), 200, X0);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable X0: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 20;
+        current_statement_begin__ = 21;
         if (!(context__.contains_r("X1")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable X1 missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("X1");
@@ -246,7 +250,7 @@ public:
         double X1(0);
         X1 = vals_r__[pos__++];
         try {
-            writer__.scalar_unconstrain(X1);
+            writer__.scalar_lub_unconstrain(-(200), 200, X1);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable X1: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -275,103 +279,103 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 17;
+            current_statement_begin__ = 18;
             local_scalar_t__ logit_pi0;
             (void) logit_pi0;  // dummy to suppress unused var warning
             if (jacobian__)
-                logit_pi0 = in__.scalar_constrain(lp__);
+                logit_pi0 = in__.scalar_lub_constrain(-(200), 200, lp__);
             else
-                logit_pi0 = in__.scalar_constrain();
-            current_statement_begin__ = 18;
+                logit_pi0 = in__.scalar_lub_constrain(-(200), 200);
+            current_statement_begin__ = 19;
             local_scalar_t__ LOR_c;
             (void) LOR_c;  // dummy to suppress unused var warning
             if (jacobian__)
-                LOR_c = in__.scalar_constrain(lp__);
+                LOR_c = in__.scalar_lub_constrain(-(200), 200, lp__);
             else
-                LOR_c = in__.scalar_constrain();
-            current_statement_begin__ = 19;
+                LOR_c = in__.scalar_lub_constrain(-(200), 200);
+            current_statement_begin__ = 20;
             local_scalar_t__ X0;
             (void) X0;  // dummy to suppress unused var warning
             if (jacobian__)
-                X0 = in__.scalar_constrain(lp__);
+                X0 = in__.scalar_lub_constrain(-(200), 200, lp__);
             else
-                X0 = in__.scalar_constrain();
-            current_statement_begin__ = 20;
+                X0 = in__.scalar_lub_constrain(-(200), 200);
+            current_statement_begin__ = 21;
             local_scalar_t__ X1;
             (void) X1;  // dummy to suppress unused var warning
             if (jacobian__)
-                X1 = in__.scalar_constrain(lp__);
+                X1 = in__.scalar_lub_constrain(-(200), 200, lp__);
             else
-                X1 = in__.scalar_constrain();
+                X1 = in__.scalar_lub_constrain(-(200), 200);
             // transformed parameters
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 24;
             local_scalar_t__ pi1;
             (void) pi1;  // dummy to suppress unused var warning
             stan::math::initialize(pi1, DUMMY_VAR__);
             stan::math::fill(pi1, DUMMY_VAR__);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             local_scalar_t__ pi0;
             (void) pi0;  // dummy to suppress unused var warning
             stan::math::initialize(pi0, DUMMY_VAR__);
             stan::math::fill(pi0, DUMMY_VAR__);
-            current_statement_begin__ = 25;
+            current_statement_begin__ = 26;
             local_scalar_t__ ORadj;
             (void) ORadj;  // dummy to suppress unused var warning
             stan::math::initialize(ORadj, DUMMY_VAR__);
             stan::math::fill(ORadj, DUMMY_VAR__);
-            current_statement_begin__ = 26;
+            current_statement_begin__ = 27;
             local_scalar_t__ Se;
             (void) Se;  // dummy to suppress unused var warning
             stan::math::initialize(Se, DUMMY_VAR__);
             stan::math::fill(Se, DUMMY_VAR__);
-            current_statement_begin__ = 27;
+            current_statement_begin__ = 28;
             local_scalar_t__ Sp;
             (void) Sp;  // dummy to suppress unused var warning
             stan::math::initialize(Sp, DUMMY_VAR__);
             stan::math::fill(Sp, DUMMY_VAR__);
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 29;
             local_scalar_t__ mcx1;
             (void) mcx1;  // dummy to suppress unused var warning
             stan::math::initialize(mcx1, DUMMY_VAR__);
             stan::math::fill(mcx1, DUMMY_VAR__);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 30;
             local_scalar_t__ preccx1;
             (void) preccx1;  // dummy to suppress unused var warning
             stan::math::initialize(preccx1, DUMMY_VAR__);
             stan::math::fill(preccx1, DUMMY_VAR__);
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 31;
             local_scalar_t__ p1;
             (void) p1;  // dummy to suppress unused var warning
             stan::math::initialize(p1, DUMMY_VAR__);
             stan::math::fill(p1, DUMMY_VAR__);
-            current_statement_begin__ = 31;
+            current_statement_begin__ = 32;
             local_scalar_t__ p0;
             (void) p0;  // dummy to suppress unused var warning
             stan::math::initialize(p0, DUMMY_VAR__);
             stan::math::fill(p0, DUMMY_VAR__);
             // transformed parameters block statements
-            current_statement_begin__ = 32;
-            stan::math::assign(mcx1, (mX1 + ((rhoSe * (X0 - mX0)) * pow((precX1 / precX0), 0.5))));
             current_statement_begin__ = 33;
-            stan::math::assign(preccx1, (precX1 / (1 - pow(rhoSe, 2))));
+            stan::math::assign(mcx1, (mX1 + ((rhoSe * (X0 - mX0)) * pow((precX1 / precX0), 0.5))));
             current_statement_begin__ = 34;
-            stan::math::assign(pi0, (stan::math::exp(logit_pi0) / (stan::math::exp(logit_pi0) + 1)));
+            stan::math::assign(preccx1, (precX1 / (1 - pow(rhoSe, 2))));
             current_statement_begin__ = 35;
-            stan::math::assign(pi1, (stan::math::exp((logit_pi0 + LOR_c)) / (stan::math::exp((logit_pi0 + LOR_c)) + 1)));
+            stan::math::assign(pi0, (stan::math::exp(logit_pi0) / (stan::math::exp(logit_pi0) + 1)));
             current_statement_begin__ = 36;
-            stan::math::assign(Se, ((1 + (stan::math::exp(X0) / (1 + stan::math::exp(X0)))) / 2));
+            stan::math::assign(pi1, (stan::math::exp((logit_pi0 + LOR_c)) / (stan::math::exp((logit_pi0 + LOR_c)) + 1)));
             current_statement_begin__ = 37;
-            stan::math::assign(Sp, ((1 + (stan::math::exp(X1) / (1 + stan::math::exp(X1)))) / 2));
+            stan::math::assign(Se, ((1 + (stan::math::exp(X0) / (1 + stan::math::exp(X0)))) / 2));
             current_statement_begin__ = 38;
-            stan::math::assign(p1, ((pi1 * Se) + ((1 - pi1) * (1 - Sp))));
+            stan::math::assign(Sp, ((1 + (stan::math::exp(X1) / (1 + stan::math::exp(X1)))) / 2));
             current_statement_begin__ = 39;
-            stan::math::assign(p0, ((pi0 * Se) + ((1 - pi0) * (1 - Sp))));
+            stan::math::assign(p1, ((pi1 * Se) + ((1 - pi1) * (1 - Sp))));
             current_statement_begin__ = 40;
+            stan::math::assign(p0, ((pi0 * Se) + ((1 - pi0) * (1 - Sp))));
+            current_statement_begin__ = 41;
             stan::math::assign(ORadj, stan::math::exp(LOR_c));
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 24;
             if (stan::math::is_uninitialized(pi1)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: pi1";
@@ -379,7 +383,7 @@ public:
             }
             check_greater_or_equal(function__, "pi1", pi1, 0);
             check_less_or_equal(function__, "pi1", pi1, 1);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             if (stan::math::is_uninitialized(pi0)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: pi0";
@@ -387,13 +391,14 @@ public:
             }
             check_greater_or_equal(function__, "pi0", pi0, 0);
             check_less_or_equal(function__, "pi0", pi0, 1);
-            current_statement_begin__ = 25;
+            current_statement_begin__ = 26;
             if (stan::math::is_uninitialized(ORadj)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: ORadj";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable ORadj: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 26;
+            check_greater_or_equal(function__, "ORadj", ORadj, 0);
+            current_statement_begin__ = 27;
             if (stan::math::is_uninitialized(Se)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: Se";
@@ -401,7 +406,7 @@ public:
             }
             check_greater_or_equal(function__, "Se", Se, 0);
             check_less_or_equal(function__, "Se", Se, 1);
-            current_statement_begin__ = 27;
+            current_statement_begin__ = 28;
             if (stan::math::is_uninitialized(Sp)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: Sp";
@@ -409,43 +414,48 @@ public:
             }
             check_greater_or_equal(function__, "Sp", Sp, 0);
             check_less_or_equal(function__, "Sp", Sp, 1);
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 29;
             if (stan::math::is_uninitialized(mcx1)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: mcx1";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable mcx1: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 30;
             if (stan::math::is_uninitialized(preccx1)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: preccx1";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable preccx1: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 30;
+            check_greater_or_equal(function__, "preccx1", preccx1, 0);
+            current_statement_begin__ = 31;
             if (stan::math::is_uninitialized(p1)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: p1";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p1: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 31;
+            check_greater_or_equal(function__, "p1", p1, 0);
+            check_less_or_equal(function__, "p1", p1, 1);
+            current_statement_begin__ = 32;
             if (stan::math::is_uninitialized(p0)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: p0";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p0: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
+            check_greater_or_equal(function__, "p0", p0, 0);
+            check_less_or_equal(function__, "p0", p0, 1);
             // model body
-            current_statement_begin__ = 43;
-            lp_accum__.add(binomial_log<propto__>(a, N1, p1));
             current_statement_begin__ = 44;
-            lp_accum__.add(binomial_log<propto__>(c, N0, p0));
-            current_statement_begin__ = 45;
-            lp_accum__.add(normal_log<propto__>(X0, mX0, pow((1 / precX0), 0.5)));
-            current_statement_begin__ = 46;
-            lp_accum__.add(normal_log<propto__>(X1, mcx1, pow((1 / preccx1), 0.5)));
-            current_statement_begin__ = 47;
             lp_accum__.add(normal_log<propto__>(logit_pi0, mLogit_pi0, sLogit_pi0));
-            current_statement_begin__ = 48;
+            current_statement_begin__ = 45;
             lp_accum__.add(normal_log<propto__>(LOR_c, mLOR_c, sLOR_c));
+            current_statement_begin__ = 46;
+            lp_accum__.add(binomial_log<propto__>(a, N1, p1));
+            current_statement_begin__ = 47;
+            lp_accum__.add(binomial_log<propto__>(c, N0, p0));
+            current_statement_begin__ = 48;
+            lp_accum__.add(normal_log<propto__>(X0, mX0, pow((1 / precX0), 0.5)));
+            current_statement_begin__ = 49;
+            lp_accum__.add(normal_log<propto__>(X1, mcx1, pow((1 / preccx1), 0.5)));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -524,13 +534,13 @@ public:
         static const char* function__ = "model_fixedCorr_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
-        double logit_pi0 = in__.scalar_constrain();
+        double logit_pi0 = in__.scalar_lub_constrain(-(200), 200);
         vars__.push_back(logit_pi0);
-        double LOR_c = in__.scalar_constrain();
+        double LOR_c = in__.scalar_lub_constrain(-(200), 200);
         vars__.push_back(LOR_c);
-        double X0 = in__.scalar_constrain();
+        double X0 = in__.scalar_lub_constrain(-(200), 200);
         vars__.push_back(X0);
-        double X1 = in__.scalar_constrain();
+        double X1 = in__.scalar_lub_constrain(-(200), 200);
         vars__.push_back(X1);
         double lp__ = 0.0;
         (void) lp__;  // dummy to suppress unused var warning
@@ -540,86 +550,96 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 24;
             double pi1;
             (void) pi1;  // dummy to suppress unused var warning
             stan::math::initialize(pi1, DUMMY_VAR__);
             stan::math::fill(pi1, DUMMY_VAR__);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             double pi0;
             (void) pi0;  // dummy to suppress unused var warning
             stan::math::initialize(pi0, DUMMY_VAR__);
             stan::math::fill(pi0, DUMMY_VAR__);
-            current_statement_begin__ = 25;
+            current_statement_begin__ = 26;
             double ORadj;
             (void) ORadj;  // dummy to suppress unused var warning
             stan::math::initialize(ORadj, DUMMY_VAR__);
             stan::math::fill(ORadj, DUMMY_VAR__);
-            current_statement_begin__ = 26;
+            current_statement_begin__ = 27;
             double Se;
             (void) Se;  // dummy to suppress unused var warning
             stan::math::initialize(Se, DUMMY_VAR__);
             stan::math::fill(Se, DUMMY_VAR__);
-            current_statement_begin__ = 27;
+            current_statement_begin__ = 28;
             double Sp;
             (void) Sp;  // dummy to suppress unused var warning
             stan::math::initialize(Sp, DUMMY_VAR__);
             stan::math::fill(Sp, DUMMY_VAR__);
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 29;
             double mcx1;
             (void) mcx1;  // dummy to suppress unused var warning
             stan::math::initialize(mcx1, DUMMY_VAR__);
             stan::math::fill(mcx1, DUMMY_VAR__);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 30;
             double preccx1;
             (void) preccx1;  // dummy to suppress unused var warning
             stan::math::initialize(preccx1, DUMMY_VAR__);
             stan::math::fill(preccx1, DUMMY_VAR__);
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 31;
             double p1;
             (void) p1;  // dummy to suppress unused var warning
             stan::math::initialize(p1, DUMMY_VAR__);
             stan::math::fill(p1, DUMMY_VAR__);
-            current_statement_begin__ = 31;
+            current_statement_begin__ = 32;
             double p0;
             (void) p0;  // dummy to suppress unused var warning
             stan::math::initialize(p0, DUMMY_VAR__);
             stan::math::fill(p0, DUMMY_VAR__);
             // do transformed parameters statements
-            current_statement_begin__ = 32;
-            stan::math::assign(mcx1, (mX1 + ((rhoSe * (X0 - mX0)) * pow((precX1 / precX0), 0.5))));
             current_statement_begin__ = 33;
-            stan::math::assign(preccx1, (precX1 / (1 - pow(rhoSe, 2))));
+            stan::math::assign(mcx1, (mX1 + ((rhoSe * (X0 - mX0)) * pow((precX1 / precX0), 0.5))));
             current_statement_begin__ = 34;
-            stan::math::assign(pi0, (stan::math::exp(logit_pi0) / (stan::math::exp(logit_pi0) + 1)));
+            stan::math::assign(preccx1, (precX1 / (1 - pow(rhoSe, 2))));
             current_statement_begin__ = 35;
-            stan::math::assign(pi1, (stan::math::exp((logit_pi0 + LOR_c)) / (stan::math::exp((logit_pi0 + LOR_c)) + 1)));
+            stan::math::assign(pi0, (stan::math::exp(logit_pi0) / (stan::math::exp(logit_pi0) + 1)));
             current_statement_begin__ = 36;
-            stan::math::assign(Se, ((1 + (stan::math::exp(X0) / (1 + stan::math::exp(X0)))) / 2));
+            stan::math::assign(pi1, (stan::math::exp((logit_pi0 + LOR_c)) / (stan::math::exp((logit_pi0 + LOR_c)) + 1)));
             current_statement_begin__ = 37;
-            stan::math::assign(Sp, ((1 + (stan::math::exp(X1) / (1 + stan::math::exp(X1)))) / 2));
+            stan::math::assign(Se, ((1 + (stan::math::exp(X0) / (1 + stan::math::exp(X0)))) / 2));
             current_statement_begin__ = 38;
-            stan::math::assign(p1, ((pi1 * Se) + ((1 - pi1) * (1 - Sp))));
+            stan::math::assign(Sp, ((1 + (stan::math::exp(X1) / (1 + stan::math::exp(X1)))) / 2));
             current_statement_begin__ = 39;
-            stan::math::assign(p0, ((pi0 * Se) + ((1 - pi0) * (1 - Sp))));
+            stan::math::assign(p1, ((pi1 * Se) + ((1 - pi1) * (1 - Sp))));
             current_statement_begin__ = 40;
+            stan::math::assign(p0, ((pi0 * Se) + ((1 - pi0) * (1 - Sp))));
+            current_statement_begin__ = 41;
             stan::math::assign(ORadj, stan::math::exp(LOR_c));
             if (!include_gqs__ && !include_tparams__) return;
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 24;
             check_greater_or_equal(function__, "pi1", pi1, 0);
             check_less_or_equal(function__, "pi1", pi1, 1);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             check_greater_or_equal(function__, "pi0", pi0, 0);
             check_less_or_equal(function__, "pi0", pi0, 1);
             current_statement_begin__ = 26;
+            check_greater_or_equal(function__, "ORadj", ORadj, 0);
+            current_statement_begin__ = 27;
             check_greater_or_equal(function__, "Se", Se, 0);
             check_less_or_equal(function__, "Se", Se, 1);
-            current_statement_begin__ = 27;
+            current_statement_begin__ = 28;
             check_greater_or_equal(function__, "Sp", Sp, 0);
             check_less_or_equal(function__, "Sp", Sp, 1);
+            current_statement_begin__ = 30;
+            check_greater_or_equal(function__, "preccx1", preccx1, 0);
+            current_statement_begin__ = 31;
+            check_greater_or_equal(function__, "p1", p1, 0);
+            check_less_or_equal(function__, "p1", p1, 1);
+            current_statement_begin__ = 32;
+            check_greater_or_equal(function__, "p0", p0, 0);
+            check_less_or_equal(function__, "p0", p0, 1);
             // write transformed parameters
             if (include_tparams__) {
                 vars__.push_back(pi1);
