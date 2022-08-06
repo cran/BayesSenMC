@@ -24,7 +24,7 @@ fixedCorrOR(
   inc_warmup = FALSE,
   window = NULL,
   refresh = 0,
-  seed = NA,
+  seed = 0,
   ...
 )
 }
@@ -74,7 +74,7 @@ The default number of iterations is 2000 unless otherwise specified in the optio
 \item{refresh}{an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 If on, refresh = max(iter/10, 1) is generally recommended.}
 
-\item{seed}{the seed for random number generation. See \link[rstan]{stan} for more details.}
+\item{seed}{the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.}
 
 \item{...}{optional parameters passed to \link[rstan]{stan}.}
 }

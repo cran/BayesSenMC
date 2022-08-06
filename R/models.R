@@ -17,7 +17,7 @@
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
@@ -29,7 +29,7 @@
 #' # 3 MCMC chains with 10000 iterations each
 #' crudeOR(a = 66, N1 = 11782, c = 243, N0 = 57973, chains = 3, iter = 10000)
 
-crudeOR <- function(a, N1, c, N0, logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2, traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = NA, ...) {
+crudeOR <- function(a, N1, c, N0, logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2, traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = 0, ...) {
   if (!((a <= N1) & (a >= 0) & (c <= N0) & (c >= 0))) {
     stop("The value(s) for a/N0/c/N1 is not valid.")
   }
@@ -71,7 +71,7 @@ crudeOR <- function(a, N1, c, N0, logitpi0_prior = c(0,10), lor_prior = c(0,2), 
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
@@ -86,7 +86,7 @@ crudeOR <- function(a, N1, c, N0, logitpi0_prior = c(0,10), lor_prior = c(0,2), 
 #' chains = 3, iter = 10000)
 
 
-correctedOR <- function(a, N1, c, N0, prior_list=NULL, se=NULL, sp=NULL, logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2, traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = NA, ...) {
+correctedOR <- function(a, N1, c, N0, prior_list=NULL, se=NULL, sp=NULL, logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2, traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = 0, ...) {
 
   if (!is.null(prior_list)) {
     if (length(prior_list) < 2 | !is.numeric(prior_list[['se']]) | !is.numeric(prior_list[['sp']])){
@@ -145,7 +145,7 @@ correctedOR <- function(a, N1, c, N0, prior_list=NULL, se=NULL, sp=NULL, logitpi
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
@@ -161,7 +161,7 @@ correctedOR <- function(a, N1, c, N0, prior_list=NULL, se=NULL, sp=NULL, logitpi
 
 logitOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp = NULL, s.lg.se = NULL, s.lg.sp = NULL, lg.se = NULL, lg.sp = NULL,
                     logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2,
-                    traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = NA, ...) {
+                    traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = 0, ...) {
 
   if (!is.null(prior_list)) {
     if (length(prior_list) < 4 | !is.numeric(prior_list[['m.lg.se']]) | !is.numeric(prior_list[['m.lg.sp']]) |
@@ -235,7 +235,7 @@ logitOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp = N
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
@@ -251,7 +251,7 @@ logitOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp = N
 
 fixedCorrOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp = NULL, s.lg.se = NULL, s.lg.sp = NULL, lg.se = NULL, lg.sp = NULL,
                         rho = NULL, logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2,
-                        traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = NA, ...) {
+                        traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = 0, ...) {
 
   if (!is.null(prior_list)) {
     if (length(prior_list) < 5 | !is.numeric(prior_list[['m.lg.se']]) | !is.numeric(prior_list[['m.lg.sp']]) |
@@ -328,7 +328,7 @@ fixedCorrOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
@@ -344,7 +344,7 @@ fixedCorrOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp
 
 randCorrOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp = NULL, s.lg.se = NULL, s.lg.sp = NULL, lg.se = NULL, lg.sp = NULL, m.z = NULL, s.z = NULL, z = NULL,
                        logitpi0_prior = c(0,10), lor_prior = c(0,2), chains = 2,
-                       traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = NA, ...) {
+                       traceplot = FALSE, inc_warmup = FALSE, window = NULL, refresh = 0, seed = 0, ...) {
 
   if (!is.null(prior_list)) {
     if (length(prior_list) < 6 | !is.numeric(prior_list[['m.lg.se']]) | !is.numeric(prior_list[['m.lg.sp']]) |
@@ -420,7 +420,7 @@ randCorrOR <- function(a, N1, c, N0, prior_list = NULL, m.lg.se = NULL, m.lg.sp 
 #' The default number of iterations is 2000 unless otherwise specified in the optional \code{iter} argument.
 #' @param refresh an integer value used to control how often the progress of sampling is reported. By default, the progress indicator is turned off, thus refresh <= 0.
 #' If on, refresh = max(iter/10, 1) is generally recommended.
-#' @param seed the seed for random number generation. See \link[rstan]{stan} for more details.
+#' @param seed the seed for random number generation. Default to 0. See \link[rstan]{stan} for more details.
 #' @param ... optional parameters passed to \link[rstan]{stan}.
 #' @return It returns a stanfit object of this model, which inherits stanfit class methods. See \link[rstan]{rstan} for more details.
 #' @import rstan
